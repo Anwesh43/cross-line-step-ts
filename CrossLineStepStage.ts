@@ -32,3 +32,44 @@ class ScaleUtil {
         return ScaleUtil.mirrorValue(scale, a, b) * dir * scGap
     }
 }
+
+class DrawingUtil {
+
+    static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        context.beginPath()
+        context.moveTo(x1, y1)
+        context.lineTo(x2, y2)
+        context.stroke()
+    }
+
+    static drawCrossLineStep(context : CanvasRenderingContext2D, size : number, sc : number) {
+        const l : number = size / 2
+        for (var i = 0; i < 2; i++) {
+            context.save()
+            context.translate(l * i , l * i)
+            context.rotate(Math.PI / 4 * sc * i)
+            DrawingUtil.drawLine(context, 0, 0, l, l)
+            context.restore()
+        }
+    }
+
+    static drawCLSNode(context : CanvasRenderingContext2D, i : number, scale : number) {
+        const gap : number = w / (nodes + 1)
+        const size : number = gap / sizeFactor
+        const sc1 : number = ScaleUtil.divideScale(scale, 0, 2)
+        const sc2 : number = ScaleUtil.divideScale(scale, 1, 2)
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w, h) / strokeFactor
+        context.strokeStyle = foreColor
+        context.save()
+        context.translate(gap * (i + 1), h / 2)
+        context.rotate(Math.PI / 2 * sc2)
+        for (var j = 0; j < lines; j++) {
+            context.save()
+            context.rotate(Math.PI / 2 * j)
+            DrawingUtil.drawCrossLineStep(context, size, ScaleUtil.divideScale(sc1, j, lines))
+            context.restore()
+        }
+        context.restore()
+    }
+}
