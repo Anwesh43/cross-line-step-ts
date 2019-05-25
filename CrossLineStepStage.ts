@@ -217,3 +217,25 @@ class CrossLineStep {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    cls : CrossLineStep = new CrossLineStep()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.cls.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.cls.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.cls.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
